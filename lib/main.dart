@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:quiz/managers/navigation_manager.dart';
+import 'package:quiz/managers/score_manager.dart';
 import 'package:quiz/pages/menu_page.dart';
 
 void main() {
+  ScoreManager.register();
   NavigationManager.register();
   runApp(const QuizApp());
 }

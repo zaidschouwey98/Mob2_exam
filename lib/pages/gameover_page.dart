@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:quiz/managers/quiz_session.dart';
+import 'package:quiz/managers/score_manager.dart';
+import 'package:quiz/models/player.dart';
 import 'package:quiz/pages/menu_page.dart';
 
 class GameoverPage extends StatelessWidget {
@@ -28,6 +30,15 @@ class GameoverPage extends StatelessWidget {
             Spacer(),
             Text("For answering ${session.questionsCount} questions", textScaleFactor: 1.5),
             Spacer(),
+            TextField(
+              onChanged: (username) {
+                ScoreManager.instance.addPlayer(Player(session.score, username, session.questionsCount));
+              },
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Enter your username',
+              ),
+            ),
             ElevatedButton(
               onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MenuPage())),
               child: Text("Back to Menu", textScaleFactor: 2.0, textAlign: TextAlign.center),
