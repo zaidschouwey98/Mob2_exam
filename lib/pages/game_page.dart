@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
+import 'package:quiz/managers/score_manager.dart';
 
 import 'package:quiz/models/question.dart';
 import 'package:quiz/managers/quiz_session.dart';
@@ -29,17 +30,14 @@ class GamePage extends StatelessWidget with GetItMixin {
     final _ = watch(target: session);
 
     return Center(
-      child: Stack(
-        alignment: AlignmentDirectional.topCenter,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-            child: Text(session.info, textScaleFactor: 2.0),
-          ),
-          _QuestionView(session),
-        ]
-      )
-    );
+        child:
+            Stack(alignment: AlignmentDirectional.topCenter, children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        child: Text(session.info, textScaleFactor: 2.0),
+      ),
+      _QuestionView(session),
+    ]));
   }
 }
 
@@ -51,12 +49,17 @@ class _QuestionView extends StatelessWidget with GetItMixin {
   @override
   Widget build(BuildContext context) {
     // Connects the the QuestionManager event stream
-    AsyncSnapshot<Question> snapshot = watchStream((QuizSession m) => m.questionStream, Question.none());
+    AsyncSnapshot<Question> snapshot =
+        watchStream((QuizSession m) => m.questionStream, Question.none());
 
     if (snapshot.hasData) {
       return buildQuestion(context, snapshot.data!);
     } else if (snapshot.hasError) {
-      return Center(child: Text('${snapshot.error}', style: TextStyle(color: Theme.of(context).errorColor, fontSize: Theme.of(context).textTheme.headline3?.fontSize)));
+      return Center(
+          child: Text('${snapshot.error}',
+              style: TextStyle(
+                  color: Theme.of(context).errorColor,
+                  fontSize: Theme.of(context).textTheme.headline3?.fontSize)));
     }
     return const Center(child: CircularProgressIndicator());
   }
@@ -64,12 +67,11 @@ class _QuestionView extends StatelessWidget with GetItMixin {
   Widget buildQuestion(BuildContext context, Question question) {
     final answerButtons = question.answers.map((answer) {
       return ElevatedButton(
-        onPressed: () => session.doAnswer(question, answer),
-        child: SizedBox(
-          width: double.infinity,
-          child: Text(answer, textScaleFactor: 2.0, textAlign: TextAlign.center)
-        )
-      );
+          onPressed: () => session.doAnswer(question, answer),
+          child: SizedBox(
+              width: double.infinity,
+              child: Text(answer,
+                  textScaleFactor: 2.0, textAlign: TextAlign.center)));
     });
 
     return Center(
@@ -82,6 +84,8 @@ class _QuestionView extends StatelessWidget with GetItMixin {
           Spacer(),
           ...answerButtons,
           Spacer(),
+          buildBestScore(context),
+          Spacer(),
         ],
       ),
     );
@@ -90,12 +94,23 @@ class _QuestionView extends StatelessWidget with GetItMixin {
   Widget buildHint(BuildContext context, Question question) {
     if (session.hintRequested) {
       return Text(question.hint, textScaleFactor: 2.0);
-    }
-    else {
+    } else {
       return ElevatedButton(
         onPressed: () => session.requestHint(),
         child: Text("?", textScaleFactor: 2.0, textAlign: TextAlign.center),
       );
+    }
+  }
+
+  Widget buildBestScore(BuildContext context) {
+    if (ScoreManager.instance.players.length == 0) {
+      return Text("");
+    } else {
+      if (session.score > ScoreManager.instance.getSortedList()[0].score) {
+        return Text("Vous êtes premier !");
+      } else {
+        return Text("");
+      }
     }
   }
 }

@@ -10,7 +10,7 @@ class ScoreManager {
 
   List<Player> getSortedList(){
     players.sort((a,b)=> b.score.compareTo(a.score));
-    return players;
+    return players.sublist(0,players.length > 5 ? 5 : players.length);
   } 
 
   static void register(){
