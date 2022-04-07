@@ -7,6 +7,8 @@ import 'package:quiz/models/player.dart';
 import 'package:quiz/pages/menu_page.dart';
 
 class GameoverPage extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final session = GetIt.I.get<QuizSession>();
@@ -30,17 +32,24 @@ class GameoverPage extends StatelessWidget {
             Spacer(),
             Text("For answering ${session.questionsCount} questions", textScaleFactor: 1.5),
             Spacer(),
-            TextField(
-              onChanged: (username) {
-                ScoreManager.instance.addPlayer(Player(session.score, username, session.questionsCount));
-              },
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Enter your username',
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                onSaved: (username) {
+                  if(username != "")
+                    ScoreManager.instance.addPlayer(Player(session.score, username!, session.questionsCount));
+                },
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Enter your username',
+                ),
               ),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MenuPage())),
+              onPressed: () { 
+                _formKey.currentState!.save();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MenuPage()));
+                },
               child: Text("Back to Menu", textScaleFactor: 2.0, textAlign: TextAlign.center),
             ),
             Spacer(),

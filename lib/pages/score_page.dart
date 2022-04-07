@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:quiz/managers/score_manager.dart';
 import 'package:quiz/models/player.dart';
 
+import 'menu_page.dart';
+
 class ScorePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -11,12 +13,19 @@ class ScorePage extends StatelessWidget{
       appBar: AppBar(
         title: Text("Quiz - Scores"),
       ),
-      body: Center(child: buildScore(context)),
+      body: Center(child:Column(children: [
+        
+        buildScore(context),
+        ElevatedButton(
+              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MenuPage())),
+              child: Text("Back to Menu", textScaleFactor: 2.0, textAlign: TextAlign.center),
+            ),
+        ])),
     );
   }
 
   Widget buildScore(BuildContext context){
-    final playerScores = ScoreManager.instance.players.map((Player p){
+    final playerScores = ScoreManager.instance.getSortedList().map((Player p){
       return TableRow(children: [
         Column(children: [Text(p.name)]),
         Column(children: [Text(p.score.toString())]),

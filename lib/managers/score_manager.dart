@@ -7,6 +7,12 @@ class ScoreManager {
   void addPlayer(Player player){
     players.add(player);
   }
+
+  List<Player> getSortedList(){
+    players.sort((a,b)=> b.score.compareTo(a.score));
+    return players;
+  } 
+
   static void register(){
     GetIt.I.registerLazySingleton(() => ScoreManager());
   }
