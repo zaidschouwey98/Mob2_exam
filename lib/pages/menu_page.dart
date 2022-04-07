@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:quiz/pages/game_page.dart';
+import 'package:quiz/pages/score_page.dart';
 import 'package:quiz/services/static_question_repository.dart';
 import 'package:quiz/managers/rookie_quiz_session.dart';
 import 'package:quiz/managers/journeyman_quiz_session.dart';
@@ -52,6 +53,14 @@ class MenuPage extends StatelessWidget {
                 ));
               },
               child: Text("Ninja", textScaleFactor: 2.0, textAlign: TextAlign.center),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => ScorePage()
+                ));
+              },
+              child: Text("Scores", textScaleFactor: 2.0, textAlign: TextAlign.center),
             ),
           ],
         ),
